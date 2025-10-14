@@ -1,5 +1,5 @@
 import { PrismaClient, ProductStatus } from '@prisma/client';
-import CloudinaryUtil from '../utils/cloudinary.util';
+import FileStorageUtil from '../utils/cloudinary.util';
 import EmailService from '../utils/email.util';
 
 const prisma = new PrismaClient();
@@ -170,17 +170,17 @@ export class ProductService {
       throw new Error('Product not found');
     }
 
-    // Supprimer les images de Cloudinary
+    // Supprimer les images locales
     if (product.photos.length > 0) {
-      const publicIds = product.photos
+      const filenames = product.photos
         .filter((photo) => photo.publicId)
         .map((photo) => photo.publicId as string);
-      
-      if (publicIds.length > 0) {
+
+      if (filenames.length > 0) {
         try {
-          await CloudinaryUtil.deleteMultipleImages(publicIds);
+          await FileStorageUtil.deleteMultipleImages(filenames);
         } catch (error) {
-          console.error('Error deleting images from Cloudinary:', error);
+          console.error('Error deleting local images:', error);
         }
       }
     }

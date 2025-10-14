@@ -247,7 +247,7 @@
               <div class="product-card">
                 <div class="product-image">
                   @if (product.photos && product.photos.length > 0) {
-                    <img [src]="'/api/uploads/' + product.photos[0].url" [alt]="product.title" />
+                    <img [src]="getProductImageUrl(product.photos[0].url)" [alt]="product.title" />
                   } @else {
                     <div class="no-image">
                       <lucide-icon [img]="Image" [size]="32"></lucide-icon>

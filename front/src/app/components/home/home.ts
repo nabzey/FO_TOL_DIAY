@@ -78,8 +78,24 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   getPrimaryPhoto(product: Product): string {
+    if (!product.photos || product.photos.length === 0) {
+      return '/placeholder.svg';
+    }
+
     const primary = product.photos.find(p => p.isPrimary);
-    return primary?.url || product.photos[0]?.url || '/placeholder.svg';
+    const photoUrl = primary?.url || product.photos[0]?.url;
+
+    // Si l'URL commence par /uploads, elle est déjà correcte
+    if (photoUrl.startsWith('/uploads')) {
+      return photoUrl;
+    }
+
+    // Si l'URL est relative, ajouter le préfixe /uploads
+    if (photoUrl && !photoUrl.startsWith('http')) {
+      return `/uploads${photoUrl.startsWith('/') ? '' : '/'}${photoUrl}`;
+    }
+
+    return photoUrl || '/placeholder.svg';
   }
 
   viewProduct(product: Product, event: Event): void {

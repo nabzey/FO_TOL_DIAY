@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import productService from '../services/product.service';
 import { ProductStatus } from '@prisma/client';
-import CloudinaryUtil from '../utils/cloudinary.util';
+import FileStorageUtil from '../utils/cloudinary.util';
 
 export class ProductController {
   // Créer un produit (vendeur authentifié)
@@ -36,14 +36,19 @@ export class ProductController {
         return res.status(400).json({ error: 'Maximum 5 photos allowed' });
       }
 
-      // Upload des photos vers Cloudinary
-      const uploadedPhotos = await CloudinaryUtil.uploadMultipleImages(files);
+      // Sauvegarder les photos localement
+      console.log('Saving photos locally...');
+      const uploadedPhotos = await FileStorageUtil.saveMultipleImages(files);
+      console.log('Photos saved successfully:', uploadedPhotos);
 
       const product = await productService.createProduct({
         title,
         description,
         sellerId: userId,
-        photos: uploadedPhotos,
+        photos: uploadedPhotos.map(photo => ({
+          url: photo.url,
+          publicId: photo.filename, // Utiliser filename comme publicId pour la compatibilité
+        })),
       });
 
       res.status(201).json({

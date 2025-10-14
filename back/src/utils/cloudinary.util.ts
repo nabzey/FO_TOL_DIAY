@@ -1,100 +1,103 @@
-import { v2 as cloudinary } from 'cloudinary';
-import { Readable } from 'stream';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
-// Configuration Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+export class FileStorageUtil {
+  private static readonly UPLOAD_DIR = path.join(__dirname, '../../public/uploads');
 
-export class CloudinaryUtil {
   /**
-   * Upload une image vers Cloudinary depuis un buffer
+   * S'assurer que le dossier uploads existe
    */
-  static async uploadImage(
+  private static async ensureUploadDir(): Promise<void> {
+    try {
+      await fs.access(this.UPLOAD_DIR);
+    } catch {
+      await fs.mkdir(this.UPLOAD_DIR, { recursive: true });
+    }
+  }
+
+  /**
+   * Sauvegarder une image localement
+   */
+  static async saveImage(
     fileBuffer: Buffer,
-    folder: string = 'fotoljay/products'
-  ): Promise<{ url: string; publicId: string }> {
-    return new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder,
-          resource_type: 'image',
-          transformation: [
-            { width: 1200, height: 1200, crop: 'limit' }, // Limiter la taille
-            { quality: 'auto' }, // Optimisation automatique
-            { fetch_format: 'auto' }, // Format optimal (WebP si supporté)
-          ],
-        },
-        (error, result) => {
-          if (error) {
-            reject(error);
-          } else if (result) {
-            resolve({
-              url: result.secure_url,
-              publicId: result.public_id,
-            });
-          }
-        }
-      );
+    originalName: string,
+    folder: string = 'products'
+  ): Promise<{ url: string; filename: string }> {
+    await this.ensureUploadDir();
 
-      // Convertir le buffer en stream et uploader
-      const readableStream = new Readable();
-      readableStream.push(fileBuffer);
-      readableStream.push(null);
-      readableStream.pipe(uploadStream);
-    });
+    // Générer un nom de fichier unique
+    const extension = path.extname(originalName) || '.jpg';
+    const filename = `${uuidv4()}${extension}`;
+    const folderPath = path.join(this.UPLOAD_DIR, folder);
+
+    // Créer le dossier si nécessaire
+    try {
+      await fs.access(folderPath);
+    } catch {
+      await fs.mkdir(folderPath, { recursive: true });
+    }
+
+    const filePath = path.join(folderPath, filename);
+
+    // Écrire le fichier
+    await fs.writeFile(filePath, fileBuffer);
+
+    // Retourner l'URL relative pour le frontend
+    const url = `/uploads/${folder}/${filename}`;
+
+    console.log('Image saved locally:', { url, filename, filePath });
+
+    return { url, filename };
   }
 
   /**
-   * Upload plusieurs images
+   * Sauvegarder plusieurs images
    */
-  static async uploadMultipleImages(
+  static async saveMultipleImages(
     files: Express.Multer.File[],
-    folder: string = 'fotoljay/products'
-  ): Promise<{ url: string; publicId: string }[]> {
-    const uploadPromises = files.map((file) =>
-      this.uploadImage(file.buffer, folder)
+    folder: string = 'products'
+  ): Promise<{ url: string; filename: string }[]> {
+    const savePromises = files.map((file) =>
+      this.saveImage(file.buffer, file.originalname, folder)
     );
-    return Promise.all(uploadPromises);
+    return Promise.all(savePromises);
   }
 
   /**
-   * Supprimer une image de Cloudinary
+   * Supprimer une image locale
    */
-  static async deleteImage(publicId: string): Promise<void> {
+  static async deleteImage(filename: string, folder: string = 'products'): Promise<void> {
     try {
-      await cloudinary.uploader.destroy(publicId);
+      const filePath = path.join(this.UPLOAD_DIR, folder, filename);
+      await fs.unlink(filePath);
+      console.log('Image deleted locally:', filePath);
     } catch (error) {
-      console.error('Error deleting image from Cloudinary:', error);
+      console.error('Error deleting local image:', error);
       throw error;
     }
   }
 
   /**
-   * Supprimer plusieurs images
+   * Supprimer plusieurs images locales
    */
-  static async deleteMultipleImages(publicIds: string[]): Promise<void> {
-    try {
-      await cloudinary.api.delete_resources(publicIds);
-    } catch (error) {
-      console.error('Error deleting images from Cloudinary:', error);
-      throw error;
-    }
+  static async deleteMultipleImages(filenames: string[], folder: string = 'products'): Promise<void> {
+    const deletePromises = filenames.map(filename => this.deleteImage(filename, folder));
+    await Promise.all(deletePromises);
   }
 
   /**
-   * Obtenir les détails d'une image
+   * Vérifier si une image existe
    */
-  static async getImageDetails(publicId: string) {
+  static async imageExists(filename: string, folder: string = 'products'): Promise<boolean> {
     try {
-      return await cloudinary.api.resource(publicId);
-    } catch (error) {
-      console.error('Error getting image details:', error);
-      throw error;
+      const filePath = path.join(this.UPLOAD_DIR, folder, filename);
+      await fs.access(filePath);
+      return true;
+    } catch {
+      return false;
     }
   }
 }
 
-export default CloudinaryUtil;
+export default FileStorageUtil;

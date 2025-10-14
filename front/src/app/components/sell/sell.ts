@@ -207,6 +207,20 @@ export class SellComponent implements OnInit, OnDestroy {
     return this.sellerProducts().reduce((total, product) => total + (product.views || 0), 0);
   }
 
+  getProductImageUrl(url: string): string {
+    // Si l'URL commence par /uploads, elle est déjà correcte
+    if (url.startsWith('/uploads')) {
+      return url;
+    }
+
+    // Si l'URL est relative, ajouter le préfixe /uploads
+    if (url && !url.startsWith('http')) {
+      return `/uploads${url.startsWith('/') ? '' : '/'}${url}`;
+    }
+
+    return url || '/placeholder.svg';
+  }
+
   resetForm(): void {
     this.title.set('');
     this.description.set('');
@@ -384,3 +398,4 @@ export class SellComponent implements OnInit, OnDestroy {
     }
   }
 }
+

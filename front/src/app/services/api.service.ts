@@ -122,15 +122,19 @@ export class ApiService {
   // ==================== PRODUITS VENDEUR ====================
 
   getSellerProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/products/seller`, {
+    return this.http.get<{ products: Product[] }>(`${this.apiUrl}/products/seller`, {
       headers: this.getHeaders(true)
-    });
+    }).pipe(
+      map(response => response.products)
+    );
   }
 
   getSellerProductsAlt(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/products/seller/products`, {
+    return this.http.get<{ products: Product[] }>(`${this.apiUrl}/products/seller/products`, {
       headers: this.getHeaders(true)
-    });
+    }).pipe(
+      map(response => response.products)
+    );
   }
 
   post<T>(endpoint: string, body: any, includeAuth = false): Observable<T> {
