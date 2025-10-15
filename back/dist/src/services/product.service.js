@@ -155,7 +155,7 @@ class ProductService {
                     await cloudinary_util_1.default.deleteMultipleImages(publicIds);
                 }
                 catch (error) {
-                    console.error('Error deleting images from Cloudinary:', error);
+                    console.error('Error deleting Cloudinary images:', error);
                 }
             }
         }

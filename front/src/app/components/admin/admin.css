@@ -316,7 +316,7 @@ justify-content: space-between;
 /* Page Layout */
 .admin-page {
   min-height: 100vh;
-  background: #fce4ec;
+  background: white;
   padding: 2rem;
 }
 
@@ -334,7 +334,7 @@ justify-content: space-between;
 }
 
 .admin-product-card {
-  background: #fce4ec;
+  background: white;
   border: 1px solid var(--gray-300);
   border-radius: 1rem;
   overflow: hidden;
@@ -577,7 +577,7 @@ justify-content: space-between;
 }
 
 .modal-content {
-  background: #fce4ec;
+  background: white;
   border-radius: 1rem;
   max-width: 1000px;
   width: 100%;

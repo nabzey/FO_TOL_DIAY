@@ -243,8 +243,8 @@
           </div>
         } @else {
           <div class="products-grid">
-            @for (product of sellerProducts(); track product.id) {
-              <div class="product-card">
+            @for (product of sellerProducts(); track product.id; let i = $index) {
+            <div class="product-card" [style]="'--animation-order: ' + i">
                 <div class="product-image">
                   @if (product.photos && product.photos.length > 0) {
                     <img [src]="getProductImageUrl(product.photos[0].url)" [alt]="product.title" />

@@ -36,10 +36,10 @@ export class ProductController {
         return res.status(400).json({ error: 'Maximum 5 photos allowed' });
       }
 
-      // Sauvegarder les photos localement
-      console.log('Saving photos locally...');
+      // Sauvegarder les photos sur Cloudinary
+      console.log('Uploading photos to Cloudinary...');
       const uploadedPhotos = await FileStorageUtil.saveMultipleImages(files);
-      console.log('Photos saved successfully:', uploadedPhotos);
+      console.log('Photos uploaded successfully:', uploadedPhotos);
 
       const product = await productService.createProduct({
         title,
@@ -47,7 +47,7 @@ export class ProductController {
         sellerId: userId,
         photos: uploadedPhotos.map(photo => ({
           url: photo.url,
-          publicId: photo.filename, // Utiliser filename comme publicId pour la compatibilité
+          publicId: photo.publicId,
         })),
       });
 
@@ -106,7 +106,7 @@ export class ProductController {
       };
 
       const result = await productService.getProducts(filters);
-      res.json(result);
+      res.json({ products: result.products });
     } catch (error: any) {
       console.error('Error fetching current seller products:', error);
       res.status(500).json({ error: error.message || 'Internal server error' });

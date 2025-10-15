@@ -101,6 +101,35 @@ export class AdminComponent implements OnInit {
     this.showModal.set(true);
   }
 
+  approveProduct(product: Product): void {
+    this.apiService.approveProduct(product.id).subscribe({
+      next: (updatedProduct) => {
+        this.notificationService.success('Produit approuvé avec succès');
+        this.closeModal();
+        this.loadPendingProducts(); // Recharger la liste
+      },
+      error: (error: any) => {
+        console.error('Erreur approbation:', error);
+        this.notificationService.error('Erreur lors de l\'approbation du produit');
+      }
+    });
+  }
+
+  rejectProduct(product: Product): void {
+    const reason = prompt('Raison du rejet (optionnel):');
+    this.apiService.rejectProduct(product.id, reason || undefined).subscribe({
+      next: (updatedProduct) => {
+        this.notificationService.success('Produit rejeté');
+        this.closeModal();
+        this.loadPendingProducts(); // Recharger la liste
+      },
+      error: (error: any) => {
+        console.error('Erreur rejet:', error);
+        this.notificationService.error('Erreur lors du rejet du produit');
+      }
+    });
+  }
+
   closeModal(): void {
     this.showModal.set(false);
     this.selectedProduct.set(null);
@@ -108,14 +137,38 @@ export class AdminComponent implements OnInit {
 
   deleteProduct(product: any): void {
     if (confirm(`Êtes-vous sûr de vouloir supprimer le produit "${product.title}" ?`)) {
-      // Temporairement désactivé jusqu'à implémentation complète
-      console.log('Suppression du produit:', product.id);
+      this.apiService.deleteProduct(product.id).subscribe({
+        next: () => {
+          this.notificationService.success('Produit supprimé avec succès');
+          this.loadPendingProducts(); // Recharger la liste
+        },
+        error: (error: any) => {
+          console.error('Erreur suppression:', error);
+          this.notificationService.error('Erreur lors de la suppression du produit');
+        }
+      });
     }
   }
 
   getPrimaryPhoto(product: Product): string {
+    if (!product.photos || product.photos.length === 0) {
+      return '/placeholder.svg';
+    }
+
     const primary = product.photos.find(p => p.isPrimary);
-    return primary?.url || product.photos[0]?.url || '/placeholder.svg';
+    const photoUrl = primary?.url || product.photos[0]?.url;
+
+    // Si l'URL est une URL complète (Cloudinary), la retourner telle quelle
+    if (photoUrl && photoUrl.startsWith('http')) {
+      return photoUrl;
+    }
+
+    // Pour la compatibilité avec les anciennes URLs locales
+    if (photoUrl && photoUrl.startsWith('/uploads')) {
+      return photoUrl;
+    }
+
+    return '/placeholder.svg';
   }
 
   formatDate(date: string): string {

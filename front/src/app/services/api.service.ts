@@ -122,7 +122,7 @@ export class ApiService {
   // ==================== PRODUITS VENDEUR ====================
 
   getSellerProducts(): Observable<Product[]> {
-    return this.http.get<{ products: Product[] }>(`${this.apiUrl}/products/seller`, {
+    return this.http.get<{ products: Product[] }>(`${this.apiUrl}/products/seller/products`, {
       headers: this.getHeaders(true)
     }).pipe(
       map(response => response.products)
@@ -130,7 +130,7 @@ export class ApiService {
   }
 
   getSellerProductsAlt(): Observable<Product[]> {
-    return this.http.get<{ products: Product[] }>(`${this.apiUrl}/products/seller/products`, {
+    return this.http.get<{ products: Product[] }>(`${this.apiUrl}/products/seller`, {
       headers: this.getHeaders(true)
     }).pipe(
       map(response => response.products)
@@ -140,6 +140,12 @@ export class ApiService {
   post<T>(endpoint: string, body: any, includeAuth = false): Observable<T> {
     return this.http.post<T>(`${this.apiUrl}${endpoint}`, body, {
       headers: this.getHeaders(includeAuth)
+    });
+  }
+
+  deleteProduct(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/products/${id}`, {
+      headers: this.getHeaders(true)
     });
   }
 

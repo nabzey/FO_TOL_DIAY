@@ -160,23 +160,15 @@ export class SellComponent implements OnInit, OnDestroy {
   }
 
   loadSellerProducts(): void {
-    // Essayer d'abord la route principale, puis l'alternative si elle échoue
+    // Utiliser la route principale qui fonctionne
     this.apiService.getSellerProducts().subscribe({
       next: (products: Product[]) => {
+        console.log('Produits chargés avec succès:', products);
         this.sellerProducts.set(products);
       },
       error: (error) => {
-        console.error('Erreur avec la route principale, tentative avec l\'alternative:', error);
-        // Essayer l'alternative
-        this.apiService.getSellerProductsAlt().subscribe({
-          next: (products: Product[]) => {
-            this.sellerProducts.set(products);
-          },
-          error: (altError) => {
-            console.error('Erreur lors du chargement des produits:', altError);
-            this.toastService.error('Erreur lors du chargement de vos produits');
-          }
-        });
+        console.error('Erreur lors du chargement des produits:', error);
+        this.toastService.error('Erreur lors du chargement de vos produits');
       }
     });
   }
@@ -200,6 +192,7 @@ export class SellComponent implements OnInit, OnDestroy {
   }
 
   getActiveProductsCount(): number {
+    console.log('Produits dans getActiveProductsCount:', this.sellerProducts());
     return this.sellerProducts().filter(p => p.status === ProductStatus.APPROVED).length;
   }
 
@@ -208,17 +201,18 @@ export class SellComponent implements OnInit, OnDestroy {
   }
 
   getProductImageUrl(url: string): string {
-    // Si l'URL commence par /uploads, elle est déjà correcte
-    if (url.startsWith('/uploads')) {
+    // Si l'URL est une URL complète (Cloudinary), la retourner telle quelle
+    if (url && url.startsWith('http')) {
       return url;
     }
 
-    // Si l'URL est relative, ajouter le préfixe /uploads
-    if (url && !url.startsWith('http')) {
-      return `/uploads${url.startsWith('/') ? '' : '/'}${url}`;
+    // Pour la compatibilité avec les anciennes URLs locales
+    if (url && url.startsWith('/uploads')) {
+      return url;
     }
 
-    return url || '/placeholder.svg';
+    // Fallback vers le placeholder
+    return '/placeholder.svg';
   }
 
   resetForm(): void {
@@ -241,8 +235,16 @@ export class SellComponent implements OnInit, OnDestroy {
 
   deleteProduct(product: Product): void {
     if (confirm(`Êtes-vous sûr de vouloir supprimer le produit "${product.title}" ?`)) {
-      // Temporairement désactivé jusqu'à implémentation de l'API
-      this.toastService.info('Fonctionnalité de suppression à venir');
+      this.apiService.deleteProduct(product.id).subscribe({
+        next: () => {
+          this.toastService.success('Produit supprimé avec succès');
+          this.loadSellerProducts(); // Recharger la liste
+        },
+        error: (error) => {
+          console.error('Erreur suppression:', error);
+          this.toastService.error('Erreur lors de la suppression du produit');
+        }
+      });
     }
   }
 

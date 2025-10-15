@@ -1,7 +1,6 @@
 /* Global Styles - FOTOL JAY - Modern Dark Theme */
 
 :root {
-  /* Variables de thème - définies dynamiquement par ThemeService */
   --primary-color: #e91e63;
   --primary-hover: #c2185b;
   --secondary-color: #ffb6e6;
@@ -10,7 +9,6 @@
   --surface-color: #ffffff;
   --text-color: #333333;
 
-  /* Variables grises pour thèmes sombres/clairs */
   --gray-50: #f9fafb;
   --gray-100: #f3f4f6;
   --gray-150: #f0f1f3;

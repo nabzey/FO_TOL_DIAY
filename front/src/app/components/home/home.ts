@@ -1,20 +1,18 @@
-import { Component, OnInit, AfterViewInit, signal, PLATFORM_ID, inject, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { Product } from '../../models/product.model';
 import { LucideAngularModule, Camera, Search, Eye, Star, Plus, X, Phone, Mail, User, Menu, Palette, Home, Shield } from 'lucide-angular';
-import { NoDownloadDirective } from '../../directives/no-download.directive';
-import { ThemeSelectorComponent } from '../theme-selector/theme-selector';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule, NoDownloadDirective, ThemeSelectorComponent],
+  imports: [CommonModule, FormsModule, RouterLink, LucideAngularModule],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private apiService = inject(ApiService);
   
@@ -40,7 +38,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   showModal = signal<boolean>(false);
   mobileMenuOpen = signal<boolean>(false);
 
-  @ViewChild('themeSelector') themeSelector?: ThemeSelectorComponent;
+
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -48,9 +46,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    // Plus besoin du themeSelectorComponent car on utilise directement le composant dans la navbar
-  }
+
 
   loadProducts(): void {
     this.loading.set(true);
@@ -85,17 +81,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const primary = product.photos.find(p => p.isPrimary);
     const photoUrl = primary?.url || product.photos[0]?.url;
 
-    // Si l'URL commence par /uploads, elle est déjà correcte
-    if (photoUrl.startsWith('/uploads')) {
+    // Si l'URL est une URL complète (Cloudinary), la retourner telle quelle
+    if (photoUrl && photoUrl.startsWith('http')) {
       return photoUrl;
     }
 
-    // Si l'URL est relative, ajouter le préfixe /uploads
-    if (photoUrl && !photoUrl.startsWith('http')) {
-      return `/uploads${photoUrl.startsWith('/') ? '' : '/'}${photoUrl}`;
+    // Pour la compatibilité avec les anciennes URLs locales
+    if (photoUrl && photoUrl.startsWith('/uploads')) {
+      return photoUrl;
     }
 
-    return photoUrl || '/placeholder.svg';
+    return '/placeholder.svg';
   }
 
   viewProduct(product: Product, event: Event): void {
@@ -118,12 +114,5 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.mobileMenuOpen.set(false);
   }
 
-  openThemeSelector(): void {
-    if (this.themeSelector) {
-      this.themeSelector.open();
-      this.closeMobileMenu(); // Fermer le menu mobile après avoir ouvert le sélecteur
-    } else {
-      console.error('Theme selector not found');
-    }
-  }
+
 }

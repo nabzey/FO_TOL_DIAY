@@ -1,15 +1,20 @@
-export declare class CloudinaryUtil {
+export declare class FileStorageUtil {
+    private static readonly UPLOAD_DIR;
     /**
-     * Upload une image vers Cloudinary depuis un buffer
+     * S'assurer que le dossier uploads existe (pour la compatibilité)
      */
-    static uploadImage(fileBuffer: Buffer, folder?: string): Promise<{
+    private static ensureUploadDir;
+    /**
+     * Sauvegarder une image sur Cloudinary
+     */
+    static saveImage(fileBuffer: Buffer, originalName: string, folder?: string): Promise<{
         url: string;
         publicId: string;
     }>;
     /**
-     * Upload plusieurs images
+     * Sauvegarder plusieurs images sur Cloudinary
      */
-    static uploadMultipleImages(files: Express.Multer.File[], folder?: string): Promise<{
+    static saveMultipleImages(files: Express.Multer.File[], folder?: string): Promise<{
         url: string;
         publicId: string;
     }[]>;
@@ -18,13 +23,21 @@ export declare class CloudinaryUtil {
      */
     static deleteImage(publicId: string): Promise<void>;
     /**
-     * Supprimer plusieurs images
+     * Supprimer plusieurs images de Cloudinary
      */
     static deleteMultipleImages(publicIds: string[]): Promise<void>;
     /**
-     * Obtenir les détails d'une image
+     * Vérifier si une image existe sur Cloudinary (via API)
      */
-    static getImageDetails(publicId: string): Promise<any>;
+    static imageExists(publicId: string): Promise<boolean>;
+    /**
+     * Méthodes de compatibilité pour le stockage local (si nécessaire)
+     */
+    static saveImageLocally(fileBuffer: Buffer, originalName: string, folder?: string): Promise<{
+        url: string;
+        filename: string;
+    }>;
+    static deleteImageLocally(filename: string, folder?: string): Promise<void>;
 }
-export default CloudinaryUtil;
+export default FileStorageUtil;
 //# sourceMappingURL=cloudinary.util.d.ts.map

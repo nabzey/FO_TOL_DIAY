@@ -170,17 +170,17 @@ export class ProductService {
       throw new Error('Product not found');
     }
 
-    // Supprimer les images locales
+    // Supprimer les images de Cloudinary
     if (product.photos.length > 0) {
-      const filenames = product.photos
+      const publicIds = product.photos
         .filter((photo) => photo.publicId)
         .map((photo) => photo.publicId as string);
 
-      if (filenames.length > 0) {
+      if (publicIds.length > 0) {
         try {
-          await FileStorageUtil.deleteMultipleImages(filenames);
+          await FileStorageUtil.deleteMultipleImages(publicIds);
         } catch (error) {
-          console.error('Error deleting local images:', error);
+          console.error('Error deleting Cloudinary images:', error);
         }
       }
     }
