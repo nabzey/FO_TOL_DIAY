@@ -1,26 +1,24 @@
-<div class="app-layout">
-  <!-- 🔹 SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <a class="sidebar-brand" routerLink="/">
-        <span class="brand-name">FotolJay</span>
-      </a>
-    </div>
-
-    <nav class="sidebar-nav">
-      <a routerLink="/" class="sidebar-link active">🏠 Accueil</a>
-      <a routerLink="/seller-auth" class="sidebar-link">🧍‍♂️ Espace Vendeur</a>
-      <a routerLink="/sell" class="sidebar-link">➕ Vendre un produit</a>
-      <a routerLink="/login" class="sidebar-link">🛡️ Connexion Admin</a>
-    </nav>
-  </aside>
-
+<div class="page-container">
   <!-- 🔹 CONTENU PRINCIPAL -->
   <div class="main-container">
-    <!-- IMAGE DE FOND -->
-    <div class="background-container">
+    <!-- ANIMATED BACKGROUND IMAGES -->
+    <div class="animated-background">
+      <div class="bg-image bg-image-1">
+        <img src="/assets/images/bg1.jpg" alt="Fashion background 1" />
+      </div>
+      <div class="bg-image bg-image-2">
+        <img src="/assets/images/bg2.jpg" alt="Fashion background 2" />
+      </div>
+      <div class="bg-image bg-image-3">
+        <img src="/assets/images/bg3.jpg" alt="Fashion background 3" />
+      </div>
+      <div class="bg-image bg-image-4">
+        <img src="/assets/images/bg4.jpg" alt="Fashion background 4" />
+      </div>
+      <div class="bg-image bg-image-5">
+        <img src="/assets/images/bg5.jpg" alt="Fashion background 5" />
+      </div>
       <div class="background-overlay"></div>
-      <img src="/assets/images/Doveva_Fashion.png" alt="background" class="background-image" />
     </div>
 
     <!-- CONTENU CENTRAL -->
@@ -56,86 +54,93 @@
 
         <!-- Loading -->
         @if (loading()) {
-        <div class="loading">
-          <div class="spinner"></div>
-          <p>Chargement des produits...</p>
-        </div>
+          <div class="loading">
+            <div class="spinner"></div>
+            <p>Chargement des produits...</p>
+          </div>
         }
 
         <!-- Liste des produits -->
         @else { @if (products().length === 0) {
-        <div class="empty-state">
-          <p>Aucun produit disponible pour le moment</p>
-        </div>
-        } @else {
-        <div class="products-grid">
-          @for (product of products(); track product.id; let i = $index) {
-          <div class="product-card" [style]="'--animation-order: ' + i">
-            <div class="product-image">
-              <img
-                [src]="getPrimaryPhoto(product)"
-                [alt]="product.title"
-                [title]="product.title"
-                class="product-image"
-                (error)="$any($event.target).src = '/placeholder.svg'"
-              />
-            </div>
-            <div class="product-body">
-              @if (product.isVip) {
-              <span class="badge badge-vip">
-                <lucide-icon [img]="Star" [size]="16"></lucide-icon>
-                VIP
-              </span>
-              }
-              <h3 class="product-title">{{ product.title }}</h3>
-              <p class="product-description">{{ product.description }}</p>
-
-              <!-- Informations du vendeur -->
-              <div class="product-seller">
-                <div class="seller-header">
-                  <lucide-icon [img]="User" [size]="16" class="seller-icon"></lucide-icon>
-                  <span class="seller-label">Vendeur</span>
-                </div>
-                <div class="seller-name">
-                  {{ product.seller.firstName || 'N/A' }} {{ product.seller.lastName || '' }}
-                </div>
-                <div class="seller-contact">
-                  @if (product.seller.email) {
-                  <a
-                    [href]="'mailto:' + product.seller.email"
-                    class="contact-link"
-                    title="Contacter par email"
-                  >
-                    <lucide-icon [img]="Mail" [size]="16"></lucide-icon>
-                    <span class="contact-text">Email</span>
-                  </a>
-                  } @if (product.seller.phone) {
-                  <a
-                    [href]="'tel:' + product.seller.phone"
-                    class="contact-link"
-                    title="Contacter par téléphone"
-                  >
-                    <lucide-icon [img]="Phone" [size]="16"></lucide-icon>
-                    <span class="contact-text">Téléphone</span>
-                  </a>
-                  }
-                </div>
-              </div>
-
-              <div class="product-footer">
-                <span class="product-views">
-                  <lucide-icon [img]="Eye" [size]="16"></lucide-icon>
-                  {{ product.views }} vues
-                </span>
-                <button class="btn btn-sm btn-primary" (click)="viewProduct(product, $event)">
-                  Voir détails
-                </button>
-              </div>
-            </div>
+          <div class="empty-state">
+            <p>Aucun produit disponible pour le moment</p>
           </div>
-          }
-        </div>
-        } }
+          } @else {
+          <div class="products-grid">
+            @for (product of products(); track product.id; let i = $index) {
+            <div class="product-card" [style]="'--animation-order: ' + i">
+              <div class="product-image">
+                <img
+                  [src]="getPrimaryPhoto(product)"
+                  [alt]="product.title"
+                  [title]="product.title"
+                  class="product-image"
+                  (error)="$any($event.target).src = '/placeholder.svg'"
+                />
+              </div>
+              <div class="product-body">
+                @if (product.isVip) {
+                <span class="badge badge-vip">
+                  <lucide-icon [img]="Star" [size]="16"></lucide-icon>
+                  VIP
+                </span>
+                }
+                <h3 class="product-title">{{ product.title }}</h3>
+                <p class="product-description">{{ product.description }}</p>
+
+                <!-- Informations du vendeur -->
+                <div class="product-seller">
+                  <div class="seller-header">
+                    <lucide-icon [img]="User" [size]="16" class="seller-icon"></lucide-icon>
+                    <span class="seller-label">Vendeur</span>
+                  </div>
+                  <div class="seller-name">
+                    {{ product.seller.firstName || 'N/A' }} {{ product.seller.lastName || '' }}
+                  </div>
+                  <div class="seller-contact">
+                    @if (product.seller.email) {
+                    <a
+                      [href]="'mailto:' + product.seller.email"
+                      class="contact-link"
+                      title="Contacter par email"
+                    >
+                      <lucide-icon [img]="Mail" [size]="16"></lucide-icon>
+                      <span class="contact-text">Email</span>
+                    </a>
+                    } @if (product.seller.phone) {
+                    <a
+                      [href]="'tel:' + product.seller.phone"
+                      class="contact-link"
+                      title="Contacter par téléphone"
+                    >
+                      <lucide-icon [img]="Phone" [size]="16"></lucide-icon>
+                      <span class="contact-text">Téléphone</span>
+                    </a>
+                    }
+                  </div>
+                </div>
+
+                <div class="product-footer">
+                  <span class="product-views">
+                    <lucide-icon [img]="Eye" [size]="16"></lucide-icon>
+                    {{ product.views }} vues
+                  </span>
+                  <div class="product-actions">
+                    <button class="btn btn-sm btn-primary" (click)="viewProduct(product, $event)">
+                      Voir détails
+                    </button>
+                    @if (isProductOwner(product)) {
+                    <button class="btn btn-sm btn-outline" (click)="editProduct(product, $event)">
+                      Modifier
+                    </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          } }
       </div>
     </section>
   </div>

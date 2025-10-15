@@ -149,6 +149,17 @@ export class ApiService {
     });
   }
 
+  updateProduct(id: string, formData: FormData): Observable<Product> {
+    let headers = new HttpHeaders();
+    if (this.isBrowser) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers = headers.set('Authorization', `Bearer ${token}`);
+      }
+    }
+    return this.http.put<Product>(`${this.apiUrl}/products/${id}`, formData, { headers });
+  }
+
   get<T>(endpoint: string, includeAuth = false): Observable<T> {
     return this.http.get<T>(`${this.apiUrl}${endpoint}`, {
       headers: this.getHeaders(includeAuth)

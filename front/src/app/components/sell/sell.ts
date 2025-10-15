@@ -106,6 +106,7 @@ export class SellComponent implements OnInit, OnDestroy {
   currentView = signal<'sell' | 'dashboard' | 'profile'>('sell');
   sellerProducts = signal<Product[]>([]);
   stream: MediaStream | null = null;
+  editingProductId = signal<string | null>(null);
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -125,8 +126,16 @@ export class SellComponent implements OnInit, OnDestroy {
             this.sellerEmail.set(userData.email || '');
             this.sellerPhone.set('');
 
-            // Charger les produits du vendeur
-            this.loadSellerProducts();
+            // Vérifier si on est en mode édition
+            const urlParams = new URLSearchParams(window.location.search);
+            const editProductId = urlParams.get('edit');
+
+            if (editProductId) {
+              this.loadProductForEdit(editProductId);
+            } else {
+              // Charger les produits du vendeur
+              this.loadSellerProducts();
+            }
           },
           error: () => {
             // Token invalide ou expiré
@@ -169,6 +178,44 @@ export class SellComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.error('Erreur lors du chargement des produits:', error);
         this.toastService.error('Erreur lors du chargement de vos produits');
+      }
+    });
+  }
+
+  loadProductForEdit(productId: string): void {
+    this.apiService.getProductById(productId).subscribe({
+      next: (product: Product) => {
+        // Vérifier que l'utilisateur est propriétaire du produit
+        if (product.seller.id !== this.currentUser()?.id) {
+          this.toastService.error('Vous n\'êtes pas autorisé à modifier ce produit');
+          this.router.navigate(['/']);
+          return;
+        }
+
+        // Pré-remplir le formulaire avec les données du produit
+        this.title.set(product.title);
+        this.description.set(product.description);
+        this.sellerFirstName.set(product.seller.firstName || '');
+        this.sellerLastName.set(product.seller.lastName || '');
+        this.sellerEmail.set(product.seller.email || '');
+        this.sellerPhone.set(product.seller.phone || '');
+
+        // Marquer que nous sommes en mode édition
+        this.editingProductId.set(productId);
+
+        // Charger les photos existantes
+        if (product.photos && product.photos.length > 0) {
+          const urls = product.photos.map(photo => this.getProductImageUrl(photo.url));
+          this.photoPreviewUrls.set(urls);
+        }
+
+        this.toastService.info('Produit chargé pour modification');
+        this.setView('sell');
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement du produit:', error);
+        this.toastService.error('Erreur lors du chargement du produit');
+        this.router.navigate(['/']);
       }
     });
   }
@@ -220,6 +267,7 @@ export class SellComponent implements OnInit, OnDestroy {
     this.description.set('');
     this.photos.set([]);
     this.photoPreviewUrls.set([]);
+    this.editingProductId.set(null);
     this.toastService.info('Formulaire réinitialisé');
   }
 
@@ -372,23 +420,48 @@ export class SellComponent implements OnInit, OnDestroy {
       formData.append('photos', photo);
     });
 
-    this.apiService.createProduct(formData).subscribe({
-      next: () => {
-        this.toastService.success('Produit publié avec succès! Il sera visible après modération.');
-        this.resetForm();
-        // Recharger les produits pour mettre à jour le dashboard
-        this.loadSellerProducts();
-        // Basculer vers le dashboard pour voir le nouveau produit
-        this.setView('dashboard');
-      },
-      error: (error) => {
-        console.error('Erreur:', error);
-        this.toastService.error(
-          'Erreur lors de la publication: ' + (error.error?.error || error.message)
-        );
-        this.submitting.set(false);
-      },
-    });
+    const productId = this.editingProductId();
+
+    if (productId) {
+      // Mode édition
+      this.apiService.updateProduct(productId, formData).subscribe({
+        next: () => {
+          this.toastService.success('Produit modifié avec succès!');
+          this.resetForm();
+          this.editingProductId.set(null);
+          // Recharger les produits pour mettre à jour le dashboard
+          this.loadSellerProducts();
+          // Basculer vers le dashboard pour voir le produit modifié
+          this.setView('dashboard');
+        },
+        error: (error) => {
+          console.error('Erreur:', error);
+          this.toastService.error(
+            'Erreur lors de la modification: ' + (error.error?.error || error.message)
+          );
+          this.submitting.set(false);
+        },
+      });
+    } else {
+      // Mode création
+      this.apiService.createProduct(formData).subscribe({
+        next: () => {
+          this.toastService.success('Produit publié avec succès! Il sera visible après modération.');
+          this.resetForm();
+          // Recharger les produits pour mettre à jour le dashboard
+          this.loadSellerProducts();
+          // Basculer vers le dashboard pour voir le nouveau produit
+          this.setView('dashboard');
+        },
+        error: (error) => {
+          console.error('Erreur:', error);
+          this.toastService.error(
+            'Erreur lors de la publication: ' + (error.error?.error || error.message)
+          );
+          this.submitting.set(false);
+        },
+      });
+    }
   }
 
   logout(): void {

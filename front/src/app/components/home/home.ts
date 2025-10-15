@@ -1,8 +1,9 @@
 import { Component, OnInit, signal, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 import { Product } from '../../models/product.model';
 import { LucideAngularModule, Camera, Search, Eye, Star, Plus, X, Phone, Mail, User, Menu, Palette, Home, Shield } from 'lucide-angular';
 
@@ -15,6 +16,8 @@ import { LucideAngularModule, Camera, Search, Eye, Star, Plus, X, Phone, Mail, U
 export class HomeComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private apiService = inject(ApiService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   
   readonly Camera = Camera;
   readonly Search = Search;
@@ -37,12 +40,15 @@ export class HomeComponent implements OnInit {
   selectedProduct = signal<Product | null>(null);
   showModal = signal<boolean>(false);
   mobileMenuOpen = signal<boolean>(false);
+  backgroundClicks = signal<number[]>([0, 0]);
+  currentSlide = signal<number>(0);
 
 
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.loadProducts();
+      this.startSlideshow();
     }
   }
 
@@ -114,5 +120,40 @@ export class HomeComponent implements OnInit {
     this.mobileMenuOpen.set(false);
   }
 
+  startSlideshow(): void {
+    setInterval(() => {
+      this.currentSlide.update(current => (current + 1) % 2);
+      this.updateSlides();
+    }, 5000); // Change toutes les 5 secondes
+  }
+
+  updateSlides(): void {
+    const slides = document.querySelectorAll('.slide');
+    slides.forEach((slide, index) => {
+      if (index === this.currentSlide()) {
+        slide.classList.add('active');
+      } else {
+        slide.classList.remove('active');
+      }
+    });
+  }
+
+  onBackgroundImageClick(imageIndex: number): void {
+    const currentClicks = this.backgroundClicks();
+    currentClicks[imageIndex - 1]++;
+    this.backgroundClicks.set([...currentClicks]);
+  }
+
+  isProductOwner(product: Product): boolean {
+    const currentUser = this.authService.currentUser();
+    return currentUser?.id === product.seller.id;
+  }
+
+  editProduct(product: Product, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    // Rediriger vers la page de vente avec l'ID du produit pour modification
+    this.router.navigate(['/sell'], { queryParams: { edit: product.id } });
+  }
 
 }

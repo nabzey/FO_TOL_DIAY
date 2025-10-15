@@ -1,0 +1,139 @@
+/* Global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background-color, #ffffff);
+  color: var(--text-color, #111827);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* App wrapper */
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  padding-top: 70px; /* Height of navbar */
+}
+
+/* Animated background for all pages */
+.page-background {
+  position: fixed;
+  top: 70px; /* Below navbar */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.bg-layer {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  opacity: 0.1;
+  animation: gentleFloat 30s infinite ease-in-out;
+}
+
+.bg-layer-1 {
+  top: -10%;
+  left: -10%;
+  animation: gentleFloat 30s infinite ease-in-out, slowRotate 60s infinite linear;
+}
+
+.bg-layer-2 {
+  top: 30%;
+  right: -15%;
+  animation: gentleFloat 35s infinite ease-in-out reverse, slideHorizontal 45s infinite ease-in-out;
+}
+
+.bg-layer-3 {
+  bottom: -5%;
+  left: 20%;
+  animation: gentleFloat 32s infinite ease-in-out, slowRotate 70s infinite linear reverse;
+}
+
+.bg-layer-4 {
+  top: 50%;
+  left: -25%;
+  animation: gentleFloat 38s infinite ease-in-out reverse, slideVertical 50s infinite ease-in-out;
+}
+
+.bg-layer-5 {
+  bottom: 20%;
+  right: 10%;
+  animation: gentleFloat 33s infinite ease-in-out, slowRotate 55s infinite linear;
+}
+
+.bg-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.8) contrast(1.1) saturate(0.8) blur(1px);
+}
+
+/* Background animations */
+@keyframes gentleFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.08;
+  }
+  25% {
+    transform: translate(20px, -15px) scale(1.05);
+    opacity: 0.12;
+  }
+  50% {
+    transform: translate(-15px, 20px) scale(0.95);
+    opacity: 0.1;
+  }
+  75% {
+    transform: translate(25px, 25px) scale(1.02);
+    opacity: 0.11;
+  }
+}
+
+@keyframes slowRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes slideHorizontal {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-30px); }
+}
+
+@keyframes slideVertical {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-25px); }
+}
+
+/* Theme variables */
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #8b5cf6;
+  --accent-color: #f59e0b;
+  --background-color: #ffffff;
+  --surface-color: #f9fafb;
+  --text-color: #111827;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-150: #f0f1f3;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+}

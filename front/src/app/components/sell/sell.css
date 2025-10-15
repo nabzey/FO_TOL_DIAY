@@ -85,16 +85,19 @@
 .seller-nav-btn.active {
   background: #3b82f6;
   color: white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 /* Dashboard vendeur */
 .seller-dashboard {
   max-width: 1000px;
   margin: 0 auto;
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
   padding: 2rem;
   border-radius: 1rem;
   border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-header {
@@ -151,18 +154,20 @@
 }
 
 .product-card {
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   overflow: hidden;
   transition: all 0.3s ease;
   animation: fadeInUp 1s ease-out calc(var(--animation-order) * 0.2s + 1s) both;
+  backdrop-filter: blur(10px);
 }
 
 .product-card:hover {
   border-color: #3b82f6;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  background: rgba(255, 255, 255, 0.98);
 }
 
 .product-image {
@@ -217,11 +222,13 @@
 .status-approved {
   background: #d1fae5;
   color: #065f46;
+  border: 1px solid #a7f3d0;
 }
 
 .status-rejected {
   background: #fee2e2;
   color: #dc2626;
+  border: 1px solid #fecaca;
 }
 
 .product-meta {
@@ -245,9 +252,9 @@
 }
 
 .btn-outline {
-  background: none;
-  border: 1px solid #cbd5e1;
-  color: #475569;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #d1d5db;
+  color: #374151;
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   font-size: 0.85rem;
@@ -257,23 +264,27 @@
   align-items: center;
   gap: 0.25rem;
   transition: all 0.2s;
+  backdrop-filter: blur(5px);
 }
 
 .btn-outline:hover {
-  background: #f8fafc;
-  border-color: #94a3b8;
-  color: #334155;
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #9ca3af;
+  color: #1f2937;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn-danger {
-  border-color: #ef4444;
-  color: #ef4444;
+  border-color: #dc2626;
+  color: #dc2626;
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .btn-danger:hover {
   background: #fee2e2;
-  border-color: #dc2626;
-  color: #dc2626;
+  border-color: #b91c1c;
+  color: #b91c1c;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
 }
 
 /* Profil vendeur */
@@ -384,7 +395,7 @@
   }
 }
 .navbar {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
   border-bottom: 1px solid #e5e7eb;
   padding: 1rem 2rem;
   display: flex;
@@ -395,6 +406,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  backdrop-filter: blur(8px);
 }
 
 .navbar-brand {
@@ -479,12 +491,13 @@
 .sell-card {
   max-width: 800px;
   margin: 1rem auto;
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 1rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   border: 1px solid #e5e7eb;
   animation: fadeInUp 1s ease-out 0.5s both;
+  backdrop-filter: blur(10px);
 }
 
 .card-header-section {
@@ -682,7 +695,7 @@
 .submit-btn {
   flex: 1;
   max-width: 300px;
-  background: #3b82f6;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
   border: none;
   color: white;
   font-weight: 600;
@@ -695,12 +708,13 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: #2563eb;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
 }
 
 .submit-btn:disabled {
@@ -710,9 +724,9 @@
 }
 
 .btn-secondary {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
+  background: rgba(255, 255, 255, 0.8);
+  color: #374151;
+  border: 1px solid #d1d5db;
   padding: 0.875rem 1.5rem;
   border-radius: 0.5rem;
   text-decoration: none;
@@ -721,12 +735,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .btn-secondary:hover {
-  background: #e2e8f0;
-  color: #334155;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1f2937;
   text-decoration: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .camera-btn {

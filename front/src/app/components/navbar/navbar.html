@@ -1,0 +1,119 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo et titre -->
+    <div class="navbar-brand">
+      <a routerLink="/" class="brand-link">
+        <span class="brand-name">FotolJay</span>
+      </a>
+    </div>
+
+    <!-- Navigation principale -->
+    <div class="navbar-nav">
+      <a routerLink="/" class="nav-link" routerLinkActive="active">
+        <lucide-icon [img]="Home" [size]="18"></lucide-icon>
+        <span>Accueil</span>
+      </a>
+      <a routerLink="/seller-auth" class="nav-link" routerLinkActive="active">
+        <lucide-icon [img]="User" [size]="18"></lucide-icon>
+        <span>Espace Vendeur</span>
+      </a>
+      <a routerLink="/sell" class="nav-link" routerLinkActive="active">
+        <lucide-icon [img]="Plus" [size]="18"></lucide-icon>
+        <span>Vendre</span>
+      </a>
+      <a routerLink="/login" class="nav-link" routerLinkActive="active">
+        <lucide-icon [img]="Shield" [size]="18"></lucide-icon>
+        <span>Admin</span>
+      </a>
+    </div>
+
+    <!-- Actions de droite -->
+    <div class="navbar-actions">
+      <app-theme-selector />
+      @if (isAuthenticated()) {
+        <div class="user-menu">
+          <button class="user-btn" (click)="toggleUserMenu()">
+            <div class="user-avatar">
+              <lucide-icon [img]="User" [size]="20"></lucide-icon>
+            </div>
+            <span class="user-name">{{ currentUser()?.firstName || 'Utilisateur' }}</span>
+            <lucide-icon [img]="ChevronDown" [size]="16"></lucide-icon>
+          </button>
+
+          @if (showUserMenu()) {
+            <div class="user-dropdown">
+              <div class="user-info">
+                <div class="user-details">
+                  <div class="user-fullname">{{ currentUser()?.firstName }} {{ currentUser()?.lastName }}</div>
+                  <div class="user-email">{{ currentUser()?.email }}</div>
+                  <div class="user-role">{{ getRoleLabel(currentUser()?.role) }}</div>
+                </div>
+              </div>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" (click)="logout()">
+                <lucide-icon [img]="LogOut" [size]="18"></lucide-icon>
+                <span>Déconnexion</span>
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Menu mobile -->
+    <button class="mobile-menu-btn" (click)="toggleMobileMenu()" [class.active]="mobileMenuOpen()">
+      <lucide-icon [img]="Menu" [size]="24"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- Menu mobile overlay -->
+  @if (mobileMenuOpen()) {
+    <div class="mobile-menu-overlay" (click)="closeMobileMenu()">
+      <div class="mobile-menu" (click)="$event.stopPropagation()">
+        <div class="mobile-menu-header">
+          <span class="mobile-menu-title">Menu</span>
+          <button class="mobile-menu-close" (click)="closeMobileMenu()">
+            <lucide-icon [img]="X" [size]="24"></lucide-icon>
+          </button>
+        </div>
+
+        <div class="mobile-nav">
+          <a routerLink="/" class="mobile-nav-link" routerLinkActive="active" (click)="closeMobileMenu()">
+            <lucide-icon [img]="Home" [size]="20"></lucide-icon>
+            <span>Accueil</span>
+          </a>
+          <a routerLink="/seller-auth" class="mobile-nav-link" routerLinkActive="active" (click)="closeMobileMenu()">
+            <lucide-icon [img]="User" [size]="20"></lucide-icon>
+            <span>Espace Vendeur</span>
+          </a>
+          <a routerLink="/sell" class="mobile-nav-link" routerLinkActive="active" (click)="closeMobileMenu()">
+            <lucide-icon [img]="Plus" [size]="20"></lucide-icon>
+            <span>Vendre</span>
+          </a>
+          <a routerLink="/login" class="mobile-nav-link" routerLinkActive="active" (click)="closeMobileMenu()">
+            <lucide-icon [img]="Shield" [size]="20"></lucide-icon>
+            <span>Admin</span>
+          </a>
+        </div>
+
+        @if (isAuthenticated()) {
+          <div class="mobile-user-section">
+            <div class="mobile-user-info">
+              <div class="mobile-user-avatar">
+                <lucide-icon [img]="User" [size]="24"></lucide-icon>
+              </div>
+              <div class="mobile-user-details">
+                <div class="mobile-user-name">{{ currentUser()?.firstName }} {{ currentUser()?.lastName }}</div>
+                <div class="mobile-user-email">{{ currentUser()?.email }}</div>
+              </div>
+            </div>
+            <button class="mobile-logout-btn" (click)="logout()">
+              <lucide-icon [img]="LogOut" [size]="18"></lucide-icon>
+              <span>Déconnexion</span>
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</nav>
