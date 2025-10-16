@@ -103,8 +103,22 @@ export class HomeComponent implements OnInit {
   viewProduct(product: Product, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    this.selectedProduct.set(product);
-    this.showModal.set(true);
+
+    // Incrémenter les vues du produit
+    this.apiService.incrementProductViews(product.id).subscribe({
+      next: () => {
+        // Mettre à jour le produit localement
+        const updatedProduct = { ...product, views: product.views + 1 };
+        this.selectedProduct.set(updatedProduct);
+        this.showModal.set(true);
+      },
+      error: (error) => {
+        console.error('Erreur lors de l\'incrémentation des vues:', error);
+        // Afficher quand même le modal même si l'incrémentation échoue
+        this.selectedProduct.set(product);
+        this.showModal.set(true);
+      }
+    });
   }
 
   closeModal(): void {
@@ -122,7 +136,7 @@ export class HomeComponent implements OnInit {
 
   startSlideshow(): void {
     setInterval(() => {
-      this.currentSlide.update(current => (current + 1) % 2);
+      this.currentSlide.update(current => (current + 1) % 5); // 5 images maintenant
       this.updateSlides();
     }, 5000); // Change toutes les 5 secondes
   }
@@ -154,6 +168,13 @@ export class HomeComponent implements OnInit {
     event.stopPropagation();
     // Rediriger vers la page de vente avec l'ID du produit pour modification
     this.router.navigate(['/sell'], { queryParams: { edit: product.id } });
+  }
+
+  getProductTypeClass(product: Product): string {
+    // Cette méthode peut être utilisée pour déterminer une classe CSS basée sur le type de produit
+    // Par exemple, pour différencier les produits VIP des produits normaux
+    if (!product) return 'product-normal';
+    return product.isVip ? 'product-vip' : 'product-normal';
   }
 
 }

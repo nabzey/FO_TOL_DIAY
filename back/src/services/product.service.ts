@@ -446,6 +446,37 @@ export class ProductService {
 
     return { notified: expiringProducts.length };
   }
+
+  // Incrémenter les vues d'un produit
+  async incrementProductViews(id: string) {
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    const updatedProduct = await prisma.product.update({
+      where: { id },
+      data: { views: { increment: 1 } },
+      include: {
+        photos: true,
+        seller: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+            isVip: true
+          }
+        }
+      },
+    });
+
+    return updatedProduct;
+  }
 }
 
 export default new ProductService();

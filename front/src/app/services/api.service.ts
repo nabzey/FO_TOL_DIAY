@@ -55,6 +55,12 @@ export class ApiService {
     return this.http.get<Product>(`${this.apiUrl}/products/${id}`);
   }
 
+  incrementProductViews(id: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/products/${id}/view`, {}, {
+      headers: this.getHeaders()
+    });
+  }
+
   createProduct(formData: FormData): Observable<Product> {
     let headers = new HttpHeaders();
     if (this.isBrowser) {

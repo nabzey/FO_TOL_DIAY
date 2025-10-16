@@ -1,53 +1,52 @@
 <div class="page-container">
-  <!-- 🔹 CONTENU PRINCIPAL -->
-  <div class="main-container">
-    <!-- ANIMATED BACKGROUND IMAGES -->
-    <div class="animated-background">
-      <div class="bg-image bg-image-1">
-        <img src="/assets/images/bg1.jpg" alt="Fashion background 1" />
+  <!-- ANIMATED BACKGROUND IMAGES - SLIDESHOW -->
+  <div class="animated-background">
+    <div class="slideshow-container">
+      <div class="slide active" data-slide="1">
+        <img src="/assets/images/im1.jpeg" alt="Fashion background 1" />
       </div>
-      <div class="bg-image bg-image-2">
-        <img src="/assets/images/bg2.jpg" alt="Fashion background 2" />
+      <div class="slide" data-slide="2">
+        <img src="/assets/images/im2.jpeg" alt="Fashion background 2" />
       </div>
-      <div class="bg-image bg-image-3">
-        <img src="/assets/images/bg3.jpg" alt="Fashion background 3" />
+      <div class="slide" data-slide="3">
+        <img src="/assets/images/im3.jpeg" alt="Fashion background 3" />
       </div>
-      <div class="bg-image bg-image-4">
-        <img src="/assets/images/bg4.jpg" alt="Fashion background 4" />
+      <div class="slide" data-slide="4">
+        <img src="/assets/images/im4.jpeg" alt="Fashion background 4" />
       </div>
-      <div class="bg-image bg-image-5">
-        <img src="/assets/images/bg5.jpg" alt="Fashion background 5" />
+      <div class="slide" data-slide="5">
+        <img src="/assets/images/image.png" alt="Fashion background 5" />
       </div>
-      <div class="background-overlay"></div>
+    </div>
+    <div class="background-overlay"></div>
+  </div>
+
+  <!-- CONTENU CENTRAL -->
+  <main class="main-content">
+    <h1 class="hero-title">FOTOL JAY</h1>
+    <p class="hero-subtitle">
+      Découvrez notre collection unique de photos authentiques
+    </p>
+
+    <div class="hero-actions">
+      <a routerLink="/login" class="hero-btn primary">Se connecter</a>
+      <a routerLink="/sell" class="hero-btn secondary">Vendre</a>
     </div>
 
-    <!-- CONTENU CENTRAL -->
-    <main class="main-content">
-      <h1 class="hero-title">FOTOL JAY</h1>
-      <p class="hero-subtitle">
-        Découvrez notre collection unique de photos authentiques
-      </p>
+    <div class="search-card">
+      <form (ngSubmit)="onSearch()" class="search-form">
+        <input
+          type="text"
+          [value]="searchTerm()"
+          (input)="searchTerm.set($any($event.target).value)"
+          name="search"
+          placeholder="Rechercher un produit..."
+        />
+        <button type="submit">🔍 Rechercher</button>
+      </form>
+    </div>
 
-      <div class="hero-actions">
-        <a routerLink="/login" class="hero-btn primary">Se connecter</a>
-        <a routerLink="/sell" class="hero-btn secondary">Vendre</a>
-      </div>
-
-      <div class="search-card">
-        <form (ngSubmit)="onSearch()" class="search-form">
-          <input
-            type="text"
-            [value]="searchTerm()"
-            (input)="searchTerm.set($any($event.target).value)"
-            name="search"
-            placeholder="Rechercher un produit..."
-          />
-          <button type="submit">🔍 Rechercher</button>
-        </form>
-      </div>
-    </main>
-
-    <!-- SECTION PRODUITS -->
+    <!-- SECTION PRODUITS (maintenant dans le main-content) -->
     <section class="products-section">
       <div class="container">
         <h2 class="section-title">Produits Disponibles</h2>
@@ -143,9 +142,9 @@
           } }
       </div>
     </section>
-  </div>
+  </main>
 
-  <!-- MODAL PRODUIT -->
+  <!-- MODAL PRODUIT (reste en dehors du main-content pour l'overlay) -->
   @if (showModal() && selectedProduct(); as product) {
   <div class="modal-overlay" (click)="closeModal()">
     <div class="modal-container" (click)="$event.stopPropagation()">

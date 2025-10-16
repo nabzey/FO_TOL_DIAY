@@ -94,4 +94,10 @@ router.delete(
   productController.deleteProduct.bind(productController)
 );
 
+// Incrémenter les vues d'un produit (public)
+router.post(
+  '/:id/view',
+  productController.incrementProductViews.bind(productController)
+);
+
 export default router;

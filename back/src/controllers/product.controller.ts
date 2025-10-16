@@ -191,6 +191,21 @@ export class ProductController {
       res.status(500).json({ error: error.message || 'Internal server error' });
     }
   }
+
+  // Incrémenter les vues d'un produit
+  async incrementProductViews(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const product = await productService.incrementProductViews(id);
+      res.json(product);
+    } catch (error: any) {
+      console.error('Error incrementing product views:', error);
+      if (error.message === 'Product not found') {
+        return res.status(404).json({ error: error.message });
+      }
+      res.status(500).json({ error: error.message || 'Internal server error' });
+    }
+  }
 }
 
 export default new ProductController();
