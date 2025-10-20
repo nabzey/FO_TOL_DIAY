@@ -4,10 +4,10 @@ Application web et mobile pour la vente de produits d'occasion avec photo obliga
 
 ## 🎯 Caractéristiques Principales
 
-- **Publication sans compte**: Les vendeurs publient leurs produits sans créer de compte
+- **Publication sans compte**: Les vendeurs publient leurs produits apres s'etre connecte
 - **Photo obligatoire**: Prise de photo directement via l'appareil (pas d'import galerie)
 - **Stockage CDN**: Images hébergées sur Cloudinary pour performance optimale
-- **Modération**: Admin et modérateurs valident les publications
+- **Modération**: Admin  valide les publications
 - **Consultation publique**: Acheteurs consultent sans connexion
 - **Expiration automatique**: Produits expirés après 7 jours
 - **Système VIP**: Priorité d'affichage pour certains produits
@@ -107,7 +107,7 @@ CLOUDINARY_API_SECRET=your_api_secret
 ## 📱 Fonctionnalités
 
 ### Pour les Vendeurs
-1. Accéder au site (pas de connexion)
+1. Accéder au site (apres connexion)
 2. Cliquer sur "Vendre un produit"
 3. Prendre des photos (1-5 max)
 4. Remplir: titre, description, nom, email, téléphone
