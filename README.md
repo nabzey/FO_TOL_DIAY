@@ -4,7 +4,7 @@ Application web et mobile pour la vente de produits d'occasion avec photo obliga
 
 ## 🎯 Caractéristiques Principales
 
-- **Publication sans compte**: Les vendeurs publient leurs produits sans créer de compte
+- **Publication sans compte**: Les vendeurs publient leurs produits
 - **Photo obligatoire**: Prise de photo directement via l'appareil (pas d'import galerie)
 - **Stockage CDN**: Images hébergées sur Cloudinary pour performance optimale
 - **Modération**: Admin et modérateurs valident les publications
