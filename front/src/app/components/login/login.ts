@@ -63,23 +63,29 @@ export class LoginComponent {
     this.loading.set(true);
 
     try {
-      // Essaie d'abord la connexion vendeur
-      try {
-        await this.authService.sellerLogin(this.email(), this.password());
-      } catch (sellerError) {
-        // Si la connexion vendeur échoue, essaie la connexion normale (admin/modérateur)
-        await this.authService.login(this.email(), this.password());
-      }
+      // Tenter la connexion admin/modérateur uniquement
+      await this.authService.login(this.email(), this.password());
 
-      // Rediriger vers la page appropriée selon le rôle
+      // Vérifier si c'est bien un admin
       if (this.authService.isAdmin()) {
         this.router.navigate(['/admin']);
       } else {
-        this.router.navigate(['/']);
+        // Si ce n'est pas un admin, déconnecter immédiatement et afficher le message d'erreur
+        this.authService.logout();
+        this.error.set('Cette page est réservée aux administrateurs. Les vendeurs doivent utiliser la page d\'authentification vendeur.');
+        this.loading.set(false);
+        return;
       }
     } catch (error: unknown) {
       const errorMessage = this.getErrorMessage(error);
-      this.error.set(errorMessage);
+
+      // Vérifier si c'est une erreur spécifique indiquant que c'est un compte vendeur
+      if (errorMessage.includes('vendeur') || errorMessage.includes('seller')) {
+        this.error.set('Cette page est réservée aux administrateurs. Les vendeurs doivent utiliser la page d\'authentification vendeur.');
+      } else {
+        this.error.set(errorMessage);
+      }
+
       this.loading.set(false);
     }
   }

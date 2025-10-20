@@ -1,4 +1,53 @@
 .auth-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  margin: 1rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* 🎞️ SLIDESHOW D'IMAGES DE FOND */
+.auth-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0.6) blur(2px);
+  z-index: -1;
+
+  /* Animation fluide du fond */
+  animation: bgSlide 25s infinite ease-in-out;
+}
+
+/* 💫 Animation entre plusieurs images */
+@keyframes bgSlide {
+  0% {
+    background-image: url('/assets/bg1.jpg');
+  }
+  25% {
+    background-image: url('/assets/bg2.jpg');
+  }
+  50% {
+    background-image: url('/assets/bg6.jpg');
+  }
+  75% {
+    background-image: url('/assets/bg7.jpg');
+  }
+  100% {
+    background-image: url('/assets/bg8.jpg');
+  }
+}
+
+
+
+.auth-container {
   min-height: 100vh;
   background: rgba(249, 250, 251, 0.95);
   backdrop-filter: blur(20px);
@@ -13,17 +62,16 @@
 }
 
 .auth-card {
-  width: 100%;
-  max-width: 450px;
-  background: rgba(255, 255, 255, 0.95);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  border: 1px solid #e5e7eb;
-  border-radius: 1rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
   position: relative;
-  overflow: hidden;
+  z-index: 2;
+  backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 3rem 2rem;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 420px;
+  color: white;
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.3);
 }
 
 .auth-header {
@@ -50,12 +98,13 @@
   gap: 0.75rem;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #374151;
+  color: #030303;
   margin-bottom: 0.25rem;
 }
 
+
 .auth-subtitle {
-  color: #6b7280;
+  color: #0e0e0f;
   font-size: 0.9rem;
   margin: 0;
 }
@@ -164,7 +213,7 @@
 }
 
 .btn-full {
-  width: 100%;
+  width: 80%;
   display: inline-flex;
   align-items: center;
   justify-content: center;

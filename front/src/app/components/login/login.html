@@ -1,6 +1,7 @@
 <div class="login-page">
   <div class="login-container">
     <div class="login-card">
+      <!-- HEADER -->
       <div class="login-header">
         <div class="login-icon">
           <lucide-icon [img]="Shield" [size]="32"></lucide-icon>
@@ -9,17 +10,20 @@
         <p>Accédez au tableau de bord de modération</p>
       </div>
 
+      <!-- ERROR MESSAGE -->
       @if (error()) {
-        <div class="alert alert-error">
-          <lucide-icon [img]="AlertCircle" [size]="16" class="alert-icon"></lucide-icon>
-          <span>{{ error() }}</span>
+        <div class="field-error">
+          <lucide-icon [img]="AlertCircle" [size]="16"></lucide-icon>
+          {{ error() }}
         </div>
       }
 
+      <!-- FORM -->
       <form (ngSubmit)="onSubmit()" class="login-form">
+        <!-- EMAIL -->
         <div class="form-group">
           <label class="form-label" for="email-input">
-            <lucide-icon [img]="Mail" [size]="16" class="label-icon"></lucide-icon>
+            <lucide-icon [img]="Mail" [size]="16"></lucide-icon>
             Adresse email
           </label>
           <input
@@ -43,9 +47,10 @@
           }
         </div>
 
+        <!-- PASSWORD -->
         <div class="form-group">
           <label class="form-label" for="password-input">
-            <lucide-icon [img]="Lock" [size]="16" class="label-icon"></lucide-icon>
+            <lucide-icon [img]="Lock" [size]="16"></lucide-icon>
             Mot de passe
           </label>
           <div class="password-input-wrapper">
@@ -81,13 +86,14 @@
           }
         </div>
 
+        <!-- SUBMIT BUTTON -->
         <button
           type="submit"
           class="btn btn-primary btn-large"
           [disabled]="loading()"
         >
           @if (loading()) {
-            <span class="spinner-small"></span>
+            <span class="spinner"></span>
             <span>Connexion en cours...</span>
           } @else {
             <span>Se connecter</span>
@@ -96,6 +102,7 @@
         </button>
       </form>
 
+      <!-- BACK BUTTON -->
       <div class="back-button">
         <a routerLink="/" class="btn">
           <lucide-icon [img]="ArrowLeft" [size]="16"></lucide-icon>
@@ -103,10 +110,16 @@
         </a>
       </div>
 
+      <!-- FOOTER -->
       <div class="login-footer">
         <p class="security-note">
           <lucide-icon [img]="Lock" [size]="14"></lucide-icon>
           Connexion sécurisée avec chiffrement SSL
+        </p>
+        <p class="seller-info">
+          <lucide-icon [img]="Camera" [size]="14"></lucide-icon>
+          Vous êtes vendeur ?
+          <a routerLink="/seller-auth" class="seller-link">Accédez à votre espace vendeur</a>
         </p>
       </div>
     </div>
